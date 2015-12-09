@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+startingDir=$PWD
+
+for dir in `find . -name .git -type d -exec dirname {} \;`; do
+    gitdir=`realpath "$dir"`
+    cd "$gitdir"
+    echo "Attempting in: $gitdir"
+    git ls-remote --heads &>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "Running in: $gitdir"
+        git up
+    fi
+    cd "$startingDir"
+done

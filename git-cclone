@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -e
+
+tempdir=`mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir'`
+cd $tempdir
+
+git clone $@
+repoName=`ls | sed -n 1p`
+
+cd $repoName
+detectedLanguage=`linguist | sed -n 1p | cut -d \% -f 2 | tr -d '[[:space:]]'`
+if [ -z "$detectedLanguage" ]
+then
+    detectedLanguage="NoLang"
+fi
+
+if [ $detectedLanguage = "C#" ]
+then
+  detectedLanguage="CSharp"
+fi
+
+if [ $detectedLanguage = "F#" ]
+then
+  detectedLanguage="FSharp"
+fi
+
+cd ..
+
+if [ ! -d ~/Code/$detectedLanguage ]
+then
+    mkdir -p ~/Code/$detectedLanguage
+fi
+
+if [ -d ~/Code/$detectedLanguage/$repoName ]
+then
+    echo "~/Code/$detectedLanguage/$repoName Not Empty"
+    rm -rf $tempdir
+    exit 2
+fi
+
+mv $repoName ~/Code/$detectedLanguage/$repoName
+echo "Cloned Into: ~/Code/$detectedLanguage/$repoName"
+
+rm -rf $tempdir

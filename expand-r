@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+grep -Irl --exclude-dir={.git,.idea,node_modules,packages}  --include={\*.js,\*.cs} \t . | while read line ; do 
+    expand -t 4 "$line" > /tmp/e && mv /tmp/e "$line" 
+done

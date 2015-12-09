@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+XMLLINT_INDENT=$' ' xmllint --format --encode utf-8 -
